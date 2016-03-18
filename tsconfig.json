@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "sourceMap": false
+  },
+  "files": [
+    "./typings/main.d.ts",
+    "./app.ts",
+    "./Worker.ts",
+    "./messages/Messages.ts",
+    "./models/WeatherResult.ts",
+    "./Validator.ts",
+    "./test/ArgumentsValidatorTests.ts"
+  ]
+}

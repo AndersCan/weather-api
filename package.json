@@ -1,0 +1,18 @@
+{
+  "name": "weather-api",
+  "version": "0.0.1",
+  "description": "Simple Weather Requests",
+  "main": ".app.js",
+  "dependencies": {
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "author": "AC",
+  "license": "ISC"
+}
