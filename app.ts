@@ -3,7 +3,7 @@ import * as os from "os";
 import * as http from "http";
 import * as validator from "./Validator";
 
-const api_key = "a624b84a21d994479496009e79db8824";
+const api_key = "";
 
 const clusterSettings =  {
     exec: "Worker.js",
