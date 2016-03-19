@@ -1,4 +1,6 @@
+import * as models from "./models/Messages";
 import * as http from "http";
+
 console.log("Alive");
 process.on('message', function(msg) {
   const api_key = process.argv[2];
@@ -17,7 +19,8 @@ process.on('message', function(msg) {
       res.on("data", function(chunk) {
         // let response = JSON.parse(chunk);
         // process.send({ name: response.name, result: response.main.temp });
-        process.send({ name: "paris", result: 100 });
+        process.send(new models.Messages.WeatherResponse(msg.city, 100));
+        // process.send({test : "fail"});
         process.exit(0);
       });
       // consume response body

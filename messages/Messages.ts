@@ -1,4 +1,0 @@
-enum Messages {
-  WeatherRequest,
-  WeatherDelivery
-}
