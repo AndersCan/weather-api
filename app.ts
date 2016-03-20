@@ -14,7 +14,7 @@ if (cluster.isMaster) {
   if (!argValidator.isValid(process.argv)) {
     console.error("Invalid arguments given");
     console.error("Syntax: [option] [cities...]");
-    console.error("example: london paris oslo --sortBy [temp, humitidy, temp_min, temp_max]");
+    console.error("example: london paris oslo --sortBy [temp, humidity, temp_min, temp_max]");
     process.exit(0);
   }
 
@@ -70,10 +70,11 @@ function handleFinalEvent() {
   // Sort and print
   sortResult();
   printResult();
+  killWorkers();
 
 }
 function sortResult() {
-  RESULTS.sort((a, b) => models.Messages.WeatherResponse.compareTo(a, b, cmdLineObjArguments.sortBy));
+  RESULTS.sort((a, b) => a.compareTo(b, cmdLineObjArguments.sortBy));
 }
 function printResult() {
   RESULTS.forEach(wr => {
@@ -81,6 +82,12 @@ function printResult() {
     console.log(wr.getMain());
     // console.log(wr.response.name + " : " + wr.response.main.temp + " : " + wr.response.main.humidity)
   })
+}
+
+function killWorkers(){
+  for (var id in cluster.workers) {
+    cluster.workers[id].kill();
+  }
 }
 
 

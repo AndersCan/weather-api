@@ -28,13 +28,19 @@ export module Messages {
       this.response = response;
 
     }
-    public getMain() : Main {
+    public getMain(): Main {
       return this.response.main;
+    }
+
+    private getProperty(prop: string) {
+      var tmp: any = this.response;
+      prop.split(".").forEach(p => tmp = tmp[p])
+      return tmp;
     }
     // a - b ==> acending
     // b - a ==> decending
-    static compareTo(a: WeatherResponse, b: WeatherResponse, property: string) {
-      return a.response.main[property] - b.response.main[property]
+    public compareTo(other: WeatherResponse, property: string) {
+      return this.getProperty(property) - other.getProperty(property)
     }
   }
 
