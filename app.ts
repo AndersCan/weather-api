@@ -7,11 +7,12 @@ import * as config from "./config/Config";
 const RESULTS: models.Messages.WeatherResponse[] = [];
 var cmdLineObjArguments: validator.Arguments;
 
-const cmdLineArguments = process.argv;
 const argValidator = new validator.ArgumentsValidator();
 
+
 // Make sure given arguments are valid
-if (!argValidator.isValid(process.argv)) {
+const CMD_LINE_ARGS = process.argv;
+if (!argValidator.isValid(CMD_LINE_ARGS)) {
   console.error("Invalid arguments given");
   console.error("Syntax: [cities...] [option]");
   console.error("example: london paris oslo --sortBy [name, main.temp]");
