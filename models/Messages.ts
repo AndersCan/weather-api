@@ -39,8 +39,14 @@ export module Messages {
     }
     // a - b ==> acending
     // b - a ==> decending
-    public compareTo(other: WeatherResponse, property: string) {
-      return this.getProperty(property) - other.getProperty(property)
+    public compareTo(other: WeatherResponse, property: string) :boolean|number {
+      let ourProperty = this.getProperty(property);
+      let otherProperty = other.getProperty(property)
+      if(typeof ourProperty === "string"){
+        return ourProperty > otherProperty
+      } else {
+        return ourProperty - otherProperty
+      }
     }
   }
 
