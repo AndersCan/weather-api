@@ -44,12 +44,18 @@ describe('ArgumentValidator', () => {
         subject.getArgumentsObject(["node", "filename", "london"]).cities[0]
       ).to.equal("london");
     });
-    it('Sets correct sortBy string', () => {
+
+    it('Sets sortBy property based on input', () => {
       expect(
         subject.getArgumentsObject(["node", "filename", "paris", "--sortBy", "some.random.element"]).sortBy
       ).to.equal("some.random.element");
     });
+
+    it('Default value for sortBy is main.temp', () => {
+      expect(
+        subject.getArgumentsObject(["node", "filename", "paris"]).sortBy
+      ).to.equal("main.temp");
+    });
+
   });
-
-
 });

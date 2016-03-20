@@ -7,12 +7,12 @@ export module Messages {
   export abstract class Message {
     msgType: MessageType;
 
-    constructor(mt: MessageType){
+    constructor(mt: MessageType) {
       this.msgType = mt;
     }
 
   }
-  export class WeatherRequest extends Message{
+  export class WeatherRequest extends Message {
     city: string;
     constructor(city: string) {
       super(MessageType.Request);
@@ -20,16 +20,72 @@ export module Messages {
     }
   }
 
-  export class WeatherResponse extends Message{
-    city: string;
-    temperature: number;
+  export class WeatherResponse extends Message {
+    response: Response;
 
-    constructor(city: string, temperature: number) {
+    constructor(response: Response) {
       super(MessageType.Response);
-      this.city = city;
-      this.temperature = temperature;
+      this.response = response;
 
+    }
+    // a - b ==> acending
+    // b - a ==> decending
+    static compareTo(a: WeatherResponse, b: WeatherResponse, property: string) {
+      return a.response.main[property] - b.response.main[property]
     }
   }
 
+  interface Coord {
+    lon: number;
+    lat: number;
+  }
+
+  interface Weather {
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }
+
+  interface Main {
+    temp: number;
+    pressure: number;
+    humidity: number;
+    temp_min: number;
+    temp_max: number;
+  }
+
+  interface Wind {
+    speed: number;
+    deg: number;
+    gust: number;
+  }
+
+  interface Clouds {
+    all: number;
+  }
+
+  interface Sys {
+    type: number;
+    id: number;
+    message: number;
+    country: string;
+    sunrise: number;
+    sunset: number;
+  }
+
+  export interface Response {
+    coord: Coord;
+    weather: Weather[];
+    base: string;
+    main: Main;
+    visibility: number;
+    wind: Wind;
+    clouds: Clouds;
+    dt: number;
+    sys: Sys;
+    id: number;
+    name: string;
+    cod: number;
+  }
 }
