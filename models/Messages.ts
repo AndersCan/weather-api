@@ -1,3 +1,4 @@
+import * as responses from './CurrentWeatherDataResponse';
 export module Messages {
   export enum MessageType {
     Request,
@@ -21,14 +22,14 @@ export module Messages {
   }
 
   export class WeatherResponse extends Message {
-    response: Response;
+    response: responses.Responses.CurrentWeatherDataResponse;
 
-    constructor(response: Response) {
+    constructor(response: responses.Responses.CurrentWeatherDataResponse) {
       super(MessageType.Response);
       this.response = response;
 
     }
-    public getMain(): Main {
+    public getMain(): responses.Responses.Main {
       return this.response.main;
     }
 
@@ -39,7 +40,7 @@ export module Messages {
     }
     // a - b ==> acending
     // b - a ==> decending
-    public compareTo(other: WeatherResponse, property: string) :boolean|number {
+    public compareTo(other: WeatherResponse, property: string) :any {
       let ourProperty = this.getProperty(property);
       let otherProperty = other.getProperty(property)
       if(typeof ourProperty === "string"){
@@ -48,59 +49,5 @@ export module Messages {
         return ourProperty - otherProperty
       }
     }
-  }
-
-  interface Coord {
-    lon: number;
-    lat: number;
-  }
-
-  interface Weather {
-    id: number;
-    main: string;
-    description: string;
-    icon: string;
-  }
-
-  interface Main {
-    temp: number;
-    pressure: number;
-    humidity: number;
-    temp_min: number;
-    temp_max: number;
-  }
-
-  interface Wind {
-    speed: number;
-    deg: number;
-    gust: number;
-  }
-
-  interface Clouds {
-    all: number;
-  }
-
-  interface Sys {
-    type: number;
-    id: number;
-    message: number;
-    country: string;
-    sunrise: number;
-    sunset: number;
-  }
-
-  export interface Response {
-    coord: Coord;
-    weather: Weather[];
-    base: string;
-    main: Main;
-    visibility: number;
-    wind: Wind;
-    clouds: Clouds;
-    dt: number;
-    sys: Sys;
-    id: number;
-    name: string;
-    cod: number;
   }
 }

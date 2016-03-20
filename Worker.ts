@@ -1,4 +1,5 @@
 import * as models from "./models/Messages";
+import * as responses from './models/CurrentWeatherDataResponse';
 import * as http from "http";
 const api_key = process.argv[2];
 var sent = false;
@@ -40,7 +41,7 @@ function handleMessage(msg) {
 
 }
 
-var testResponse: models.Messages.Response = {
+var testResponse: responses.Responses.CurrentWeatherDataResponse = {
   coord: { lon: -0.13, lat: 51.51 },
   weather: [{ id: 1, main: "", description: "", icon: "" }],
   base: 'cmc stations',
