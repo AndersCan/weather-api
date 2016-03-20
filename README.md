@@ -3,7 +3,7 @@ Simple weather-api written in TypeScript using node.js cluster for multi-threadi
 
 ## Setup
 ### TypeScript
-To compile the app the TypeScript compiler is required. Also the typings module is required. Both can be installed by running
+The TypeScript compiler is needed to compile the `.ts` files to `.js`. We also require the typings module. They can be installed by running
 
     npm install tsc -g
     npm install typings -g
@@ -16,12 +16,15 @@ To run the project we will also need to download the required dependencies which
     npm install
 
 ## Running the program
+Before running, either edit the Config.ts file to include your API key or add it as an environmental variable:
+
+        export OPENWEATHER_API_KEY=[Your API key]
 To make a request for London, Paris, New York...(type as many cities as you want):
 
     node app.js london paris 'new york'
-Notice that 'new york' need to be enclosed in quotes.
+Notice that 'new york' needs to be enclosed in quotes.
 
-If you want to sort the output, add the flag `--sortBy [property]`. This property is based on the sample request shown at the bottom of this document.
+If you want to sort the output, add the flag `--sortBy [property]`. This property can be set to any of the properties shown in the sample request located at the bottom of this document.
 
 ###Some examples:
 To sort on name:
@@ -34,6 +37,26 @@ To sort on temperature,
 To sort on wind speed:
 
     nodejs app.js London Paris --sortBy wind.speed
+# Design
+## Master
+In its most basic form, the `app.ts`(master) file creates a worker for each requested city and outputs the final result returned from the workers. The master communicates with the workers through inter-process communication (IPC). All the results received by the master is stored in a list. Once all the requests have been received it will sort the output and print the result. (To not spam the console, it will only print the city name followed by the `main` object)
+
+## Worker
+The worker is created and waits for a request to be received. Once it receives a request it will make a HTTP request for the given city and send the result back to the master node. After having sent the response to the master the worker process will terminate.
+
+## Quick description of additional files
+### Config.ts
+Used to configure the application. Sets what .js file should be used as the Worker for the Master and also contains a method for retrieving the API key.
+
+### Validator.ts
+Used for parsing the arguments given when running the application. It can validate the input and output an `Arguments` object that contains the requested cities and the sortBy parameter.
+
+### Messages.ts
+The message file contains the message types that are sent to and from the Worker and Master node. The master node send `WeatherRequest` while the worker returns a `WeatherResponse`. Messages sent through the IPC seem to lose their type, so the Enum class MessageType was created to seperate between there two types of messages. This file also contains the interface for the responses
+
+### CurrentWeatherDataResponse.ts
+Contains the Interfaces needed to model the response received from Openweathermap.
+
 
 ### Sample response
 Use this response to determine what you want to sort by.
