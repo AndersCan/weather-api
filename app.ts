@@ -18,10 +18,9 @@ if (!argValidator.isValid(CMD_LINE_ARGS)) {
   console.error("example: london paris oslo --sortBy [name, main.temp]");
   process.exit(0);
 }
-
-configureCluster(cluster);
 cmdLineObjArguments = argValidator.getArgumentsObject(process.argv);
 
+configureCluster(cluster);
 // Spawn a worker for all the requested cities
 var requested_cities = cmdLineObjArguments.cities;
 requested_cities.forEach(cityname => {
