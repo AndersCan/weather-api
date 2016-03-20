@@ -12,7 +12,8 @@ if (cluster.isMaster) {
 
   if (!argValidator.isValid(process.argv)) {
     console.error("Invalid arguments given");
-    console.error("Correct format is...");
+    console.error("Syntax: [option] [cities...]");
+    console.error("example: london paris oslo --sortBy temperature");
     process.exit(0);
   }
 
@@ -23,7 +24,7 @@ if (cluster.isMaster) {
   requested_cities.forEach(cityname => {
     let worker = cluster.fork();
     // worker.on("message", (msg) => console.log("Worker got: " + msg))
-    worker.send({ city: cityname });
+    worker.send(new models.Messages.WeatherRequest(cityname));
 
   })
 }
@@ -44,21 +45,25 @@ function configureClusterWorkers(cluster): void {
 
 function configureMasterMessageListener(cluster): void {
   cluster.on("message", (msg) => {
-    if (! ('msgType' in msg) ){
+    if (hasMessageType(msg)) {
+      handleMessage(msg)
+    } else {
       console.error("Unknown message received");
       console.error(msg);
-    } else {
-      handleMessage(msg)
     }
   })
 }
 
 function handleMessage(msg: models.Messages.Message) {
-  if(msg.msgType === models.Messages.MessageType.Request) {
+  if (msg.msgType === models.Messages.MessageType.Request) {
     console.error("Request sent to master");
   } else if (msg.msgType === models.Messages.MessageType.Response) {
     console.log(msg)
   } else {
     console.error("Unknown message type")
   }
+}
+
+function hasMessageType(msg: any) : boolean {
+  return 'msgType' in msg;
 }
