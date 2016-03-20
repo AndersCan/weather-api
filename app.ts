@@ -7,25 +7,23 @@ import * as config from "./config/Config";
 const RESULTS: models.Messages.WeatherResponse[] = [];
 var cmdLineObjArguments: validator.Arguments;
 
-if (cluster.isMaster) {
-  const cmdLineArguments = process.argv;
-  const argValidator = new validator.ArgumentsValidator();
+const cmdLineArguments = process.argv;
+const argValidator = new validator.ArgumentsValidator();
 
-  if (!argValidator.isValid(process.argv)) {
-    console.error("Invalid arguments given");
-    console.error("Syntax: [option] [cities...]");
-    console.error("example: london paris oslo --sortBy [temp, humidity, temp_min, temp_max]");
-    process.exit(0);
-  }
-
-  configureCluster(cluster);
-  cmdLineObjArguments = argValidator.getArgumentsObject(process.argv);
-  var requested_cities = cmdLineObjArguments.cities;
-  requested_cities.forEach(cityname => {
-    let worker = cluster.fork();
-    worker.send(new models.Messages.WeatherRequest(cityname));
-  })
+if (!argValidator.isValid(process.argv)) {
+  console.error("Invalid arguments given");
+  console.error("Syntax: [option] [cities...]");
+  console.error("example: london paris oslo --sortBy [temp, humidity, temp_min, temp_max]");
+  process.exit(0);
 }
+
+configureCluster(cluster);
+cmdLineObjArguments = argValidator.getArgumentsObject(process.argv);
+var requested_cities = cmdLineObjArguments.cities;
+requested_cities.forEach(cityname => {
+  let worker = cluster.fork();
+  worker.send(new models.Messages.WeatherRequest(cityname));
+})
 
 function configureCluster(cluster): void {
   configureClusterWorkers(cluster);
