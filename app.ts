@@ -10,15 +10,18 @@ var cmdLineObjArguments: validator.Arguments;
 const cmdLineArguments = process.argv;
 const argValidator = new validator.ArgumentsValidator();
 
+// Make sure given arguments are valid
 if (!argValidator.isValid(process.argv)) {
   console.error("Invalid arguments given");
-  console.error("Syntax: [option] [cities...]");
-  console.error("example: london paris oslo --sortBy [temp, humidity, temp_min, temp_max]");
+  console.error("Syntax: [cities...] [option]");
+  console.error("example: london paris oslo --sortBy [name, main.temp]");
   process.exit(0);
 }
 
 configureCluster(cluster);
 cmdLineObjArguments = argValidator.getArgumentsObject(process.argv);
+
+// Spawn a worker for all the requested cities
 var requested_cities = cmdLineObjArguments.cities;
 requested_cities.forEach(cityname => {
   let worker = cluster.fork();
@@ -30,11 +33,13 @@ function configureCluster(cluster): void {
   configureMasterMessageListener(cluster);
 }
 
+// Set config for Workers spawned by forks.
 function configureClusterWorkers(cluster): void {
   const clusterSettings = config.Config.getWorkerSettings();
   cluster.setupMaster(clusterSettings);
 }
 
+// Set eventhandler for when Master receives messages
 function configureMasterMessageListener(cluster): void {
   cluster.on("message", (msg) => {
     if (hasMessageType(msg)) {
@@ -46,6 +51,7 @@ function configureMasterMessageListener(cluster): void {
   })
 }
 
+// Add messages to RESULTS if it is a valid message
 function handleMessage(msg: any) {
   if (msg.msgType === models.Messages.MessageType.Request) {
     console.error("Request sent to master");
@@ -57,12 +63,13 @@ function handleMessage(msg: any) {
   }
 }
 
+// Activate FinalEvent if we have received all requested cities from workers.
 function tryFinalEvent() {
   if (RESULTS.length === requested_cities.length) {
     handleFinalEvent();
   }
 }
-
+// Sort and print results. Program should terminate after this method is called.
 function handleFinalEvent() {
   // Sort and print
   sortResult();
@@ -76,10 +83,9 @@ function printResult() {
   RESULTS.forEach(wr => {
     console.log(wr.response.name);
     console.log(wr.getMain());
-    // console.log(wr.response.name + " : " + wr.response.main.temp + " : " + wr.response.main.humidity)
   })
 }
-
+// Check that object has property 'msgType'
 function hasMessageType(msg: any): boolean {
   return 'msgType' in msg;
 }

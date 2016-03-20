@@ -1,3 +1,5 @@
+// minimist is a library for transforming an array to a object with
+// support for options such as '--sortBy'
 import * as minimist from "minimist"
 
 interface IArgumentsValidator {
@@ -10,7 +12,7 @@ export class ArgumentsValidator implements IArgumentsValidator {
     return this.isNotEmpty(trimmed) && this.containsCities(trimmed);
   }
   getArgumentsObject(args: string[]): Arguments{
-    var obj : any = minimist(this.removeNodeAndFilename(args));
+    let obj : any = minimist(this.removeNodeAndFilename(args));
     let sortBy = "main.temp";
     if('sortBy' in obj){
       sortBy = obj.sortBy

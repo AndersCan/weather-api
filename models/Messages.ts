@@ -1,4 +1,5 @@
 import * as responses from './CurrentWeatherDataResponse';
+
 export module Messages {
   export enum MessageType {
     Request,
@@ -32,7 +33,7 @@ export module Messages {
     public getMain(): responses.Responses.Main {
       return this.response.main;
     }
-
+    // Gets property that is potentially nested inside a object
     private getProperty(prop: string) {
       var tmp: any = this.response;
       prop.split(".").forEach(p => tmp = tmp[p])
@@ -40,10 +41,10 @@ export module Messages {
     }
     // a - b ==> acending
     // b - a ==> decending
-    public compareTo(other: WeatherResponse, property: string) :any {
+    public compareTo(other: WeatherResponse, property: string): any {
       let ourProperty = this.getProperty(property);
       let otherProperty = other.getProperty(property)
-      if(typeof ourProperty === "string"){
+      if (typeof ourProperty === "string") {
         return ourProperty > otherProperty
       } else {
         return ourProperty - otherProperty
