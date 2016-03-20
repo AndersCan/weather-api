@@ -21,7 +21,6 @@ if (cluster.isMaster) {
   configureCluster(cluster);
   cmdLineObjArguments = argValidator.getArgumentsObject(process.argv);
   var requested_cities = cmdLineObjArguments.cities;
-  console.log(requested_cities);
   requested_cities.forEach(cityname => {
     let worker = cluster.fork();
     worker.send(new models.Messages.WeatherRequest(cityname));
@@ -70,9 +69,8 @@ function handleFinalEvent() {
   // Sort and print
   sortResult();
   printResult();
-  killWorkers();
-
 }
+
 function sortResult() {
   RESULTS.sort((a, b) => a.compareTo(b, cmdLineObjArguments.sortBy));
 }
@@ -83,13 +81,6 @@ function printResult() {
     // console.log(wr.response.name + " : " + wr.response.main.temp + " : " + wr.response.main.humidity)
   })
 }
-
-function killWorkers(){
-  for (var id in cluster.workers) {
-    cluster.workers[id].kill();
-  }
-}
-
 
 function hasMessageType(msg: any): boolean {
   return 'msgType' in msg;
