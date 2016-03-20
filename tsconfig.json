@@ -8,6 +8,7 @@
     "./app.ts",
     "./Worker.ts",
     "./models/Messages.ts",
+    "./config/Config.ts",
     "./Validator.ts",
     "./test/ArgumentsValidatorTests.ts"
   ]

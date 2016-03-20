@@ -1,9 +1,7 @@
 import * as cluster from "cluster";
-import * as os from "os";
-import * as http from "http";
 import * as validator from "./Validator";
 import * as models from "./models/Messages";
-const api_key = "";
+import * as config from "./config/Config";
 
 
 if (cluster.isMaster) {
@@ -35,11 +33,7 @@ function configureCluster(cluster): void {
 }
 
 function configureClusterWorkers(cluster): void {
-  const clusterSettings = {
-    exec: "Worker.js",
-    args: [api_key],
-    silent: false
-  }
+  const clusterSettings = config.Config.getWorkerSettings();
   cluster.setupMaster(clusterSettings);
 }
 
