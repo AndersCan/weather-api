@@ -5,7 +5,7 @@ import * as config from "./config/Config";
 
 // Global
 const RESULTS: models.Messages.WeatherResponse[] = [];
-var cmdLineObjArguments : validator.Arguments;
+var cmdLineObjArguments: validator.Arguments;
 
 if (cluster.isMaster) {
   const cmdLineArguments = process.argv;
@@ -14,7 +14,7 @@ if (cluster.isMaster) {
   if (!argValidator.isValid(process.argv)) {
     console.error("Invalid arguments given");
     console.error("Syntax: [option] [cities...]");
-    console.error("example: london paris oslo --sortBy temperature");
+    console.error("example: london paris oslo --sortBy [temp, humitidy, temp_min, temp_max]");
     process.exit(0);
   }
 
@@ -24,9 +24,7 @@ if (cluster.isMaster) {
   console.log(requested_cities);
   requested_cities.forEach(cityname => {
     let worker = cluster.fork();
-    // worker.on("message", (msg) => console.log("Worker got: " + msg))
     worker.send(new models.Messages.WeatherRequest(cityname));
-
   })
 }
 
@@ -51,11 +49,11 @@ function configureMasterMessageListener(cluster): void {
   })
 }
 
-function handleMessage(msg: models.Messages.Message) {
+function handleMessage(msg: any) {
   if (msg.msgType === models.Messages.MessageType.Request) {
     console.error("Request sent to master");
   } else if (msg.msgType === models.Messages.MessageType.Response) {
-    RESULTS.push(<models.Messages.WeatherResponse>msg);
+    RESULTS.push(new models.Messages.WeatherResponse(msg.response));
     tryFinalEvent();
   } else {
     console.error("Unknown message type")
@@ -70,10 +68,18 @@ function tryFinalEvent() {
 
 function handleFinalEvent() {
   // Sort and print
-  RESULTS.sort((a, b) => models.Messages.WeatherResponse.compareTo(a, b, "temp"));
-  console.log("sorted");
+  sortResult();
+  printResult();
+
+}
+function sortResult() {
+  RESULTS.sort((a, b) => models.Messages.WeatherResponse.compareTo(a, b, cmdLineObjArguments.sortBy));
+}
+function printResult() {
   RESULTS.forEach(wr => {
-    console.log(wr.response.name + " : " + wr.response.main.temp)
+    console.log(wr.response.name);
+    console.log(wr.getMain());
+    // console.log(wr.response.name + " : " + wr.response.main.temp + " : " + wr.response.main.humidity)
   })
 }
 

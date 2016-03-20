@@ -28,6 +28,9 @@ export module Messages {
       this.response = response;
 
     }
+    public getMain() : Main {
+      return this.response.main;
+    }
     // a - b ==> acending
     // b - a ==> decending
     static compareTo(a: WeatherResponse, b: WeatherResponse, property: string) {
