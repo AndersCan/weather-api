@@ -9,10 +9,13 @@ export class ArgumentsValidator implements IArgumentsValidator {
     let trimmed = this.removeNodeAndFilename(args)
     return this.isNotEmpty(trimmed) && this.containsCities(trimmed);
   }
-  getArgumentsObject(args: string[]): minimist.ParsedArgs {
-    return minimist(
-      this.removeNodeAndFilename(args)
-      );
+  getArgumentsObject(args: string[]): Arguments{
+    var obj : any = minimist(this.removeNodeAndFilename(args));
+    let sortBy = "main.temp";
+    if('sortBy' in obj){
+      sortBy = obj.sortBy
+    }
+    return new Arguments(obj._, sortBy)
   }
 
   isNotEmpty(args: string[]) {
@@ -27,4 +30,15 @@ export class ArgumentsValidator implements IArgumentsValidator {
     let argObject = minimist(args);
     return '_' in argObject && argObject._.length > 0
   }
+}
+
+export class Arguments {
+  cities: string[];
+  sortBy: string;
+
+  constructor(cities: string[], sortBy: string) {
+    this.cities = cities;
+    this.sortBy = sortBy;
+  }
+
 }

@@ -25,5 +25,31 @@ describe('ArgumentValidator', () => {
         subject.isValid(["node", "filename", "--sortBy", "temperature"])
         ).to.be.false;
     });
+    it('Should return true for specific sortBy paramenter', () => {
+      expect(
+        subject.isValid(["node", "filename", "London", "--sortBy", "some.random.element"])
+      ).to.be.true;
+    });
+
   });
+
+  describe('#getArgumentsObject', () => {
+    it('Should return correct size cities', () => {
+      expect(
+        subject.getArgumentsObject(["node", "filename", "london", "paris"]).cities.length
+      ).to.equal(2);
+    });
+    it('Should return correct city', () => {
+      expect(
+        subject.getArgumentsObject(["node", "filename", "london"]).cities[0]
+      ).to.equal("london");
+    });
+    it('Sets correct sortBy string', () => {
+      expect(
+        subject.getArgumentsObject(["node", "filename", "paris", "--sortBy", "some.random.element"]).sortBy
+      ).to.equal("some.random.element");
+    });
+  });
+
+
 });
