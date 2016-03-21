@@ -11,14 +11,18 @@ Also we need to download the definition files. (Run in the application root fold
 
     typings install
 Now you should be able to compile the .ts files.
+
+    tsc
 To run the project we will also need to download the required dependencies which can be installed by running:
 
     npm install
 
 ## Running the program
-Before running, either edit the Config.ts file to include your API key or add it as an environmental variable:
+Before running, must either edit the Config.ts file to include your API key or add it as an environmental variable:
 
         export OPENWEATHER_API_KEY=[Your API key]
+Failure to give a valid API key will give a error of being unable to parse a HTML file as a Json document. There is no error checking code for the API key.
+
 To make a request for London, Paris, New York...(type as many cities as you want):
 
     node app.js london paris 'new york'
